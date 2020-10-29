@@ -1,0 +1,36 @@
+user:
+  #username 学号或者工号
+  username: '170515511208'
+  #tellphone 电话号码
+  tellphone: '15680805508'
+  #address 地址，定位信息
+  address: 中国四川省成都市金牛区一环路北1段-129号-附9号
+  #email 接受通知消息的邮箱
+  email: 735999615@qq.com
+  #school 学校全称
+  school: 成都师范学院
+  #lon 当前位置经度
+  lon: '119.191475'
+  #lat 当前位置纬度
+  lat: '26.058264'
+  #abnormalReason 反馈信息，不需要可不填
+  abnormalReason: 在家
+  #photo 签到照片，不需要可不填
+  photo:
+#今日校园相关配置
+cpdaily:
+  #附加信息组默认选项配置，没有可留空
+  defaults:
+    - default:
+        title: 您今日的体温？
+        value: 37.3度以下
+    - default:
+        title: 您今日的身体健康状况？
+        value: 身体健康
+    #附加信息组默认选项配置，按顺序，可留空
+    #- default:
+    #    title: 您今日的体温? (必填)
+    #    value: 37.3度以下
+    #- default:
+    #    title: 您今日的身体健康状态? (必填)
+    #    value: 身体健康
