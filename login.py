@@ -285,7 +285,7 @@ def getModAuthCas(data):
     cookies = requests.utils.dict_from_cookiejar(session.cookies)
     if 'MOD_AUTH_CAS' not in cookies:
         log('获取MOD_AUTH_CAS失败。。。')
-        exit(-1)
+        #exit(-1)
 
 # 通过手机号和验证码进行登陆
 def login():

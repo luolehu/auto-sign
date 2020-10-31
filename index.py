@@ -11,11 +11,11 @@ import base64
 
 ############配置############
 Cookies = {
-    'acw_tc': '2f624a6316037613056588919e62219a0a25eb1140569979a5a2ab41e35b55',
+    'acw_tc': '2f624a1e16041604400635673e06de2b50cb475d9f787a0c87802ba71ce1fd',
     'MOD_AUTH_CAS': 'AE3XNxqT8sbBzaVttZ9zbW1601827579',
 }
-CpdailyInfo = 'Iy86UyNyPEZLgaS6S4YIDfNJIJcu1sU1SjcRPxRPCDT8jtWlr65OMgjhR0FoO7t9HmoDtE/UX3/fEbBDyYHWxbUxMqFNTFTun+/O9iw0p7zyE2I1tJlkxg5Ps72/gzgK3FF2M4nqT7LjpoSPO9gkV6LXqdZ3EvpfewBIKNIPW8UgCTcH4oB+cXdG2hmlNHX4cWu+1AWdAl/SRUSB1Nvo3pAeMdlt1PqQxfNjw5SOCEUMcN4xot2XccXPGqWsBELUNhoY9OnHAtJ/M3jPjVjNpeiDBnKvUeTD'
-sessionToken = '77982aa3-4458-4121-baa4-e636c88e6406'
+CpdailyInfo = 'Iy86UyNyPEZLgaS6S4YIDfNJIJcu1sU1SjcRPxRPCDT8jtWlr65OMgjhR0FoO7t9HmoDtE/UX3/fEbBDyYHWxbUxMqFNTFTun+/O9iw0p7zyE2I1tJlkxg5Ps72/gzgK3FF2M4nqT7LjpoSPO9gkV6LXqdZ3EvpfewBIKNIPW8UgCTcH4oB+cXdG2hmlNHX4cWu+1AWdAl/SRUSB1Nvo3pAeMdlt1PqQdQ1HQ1vgzpeb4WO2qLm34keqHUGz7R4fav5PcOsQwDfEtal+FxK29YhIWCEksAJf'
+sessionToken = '329384c1-3263-4578-a3ca-e8338fcc8333'
 ############配置############
 
 # 全局
@@ -44,6 +44,7 @@ def getTimeStr():
     bj_dt = utc_dt.astimezone(timezone(timedelta(hours=8)))
     return bj_dt.strftime("%Y-%m-%d %H:%M:%S")
 
+
 # 输出调试信息，并及时刷新缓冲区
 def log(content):
     print(getTimeStr() + ' ' + str(content))
@@ -61,22 +62,23 @@ def getUnSignedTasks():
         'Content-Type': 'application/json;charset=UTF-8'
     }
     params = {}
-    url = 'https://{host}/wec-counselor-sign-apps/stu/sign/getStuSignInfosInOneDay'.format(host=host)
+    # url = 'https://{host}/wec-counselor-sign-apps/stu/sign/getStuSignInfosInOneDay'.format(host=host)
+    url = 'https://{host}/wec-counselor-sign-apps/stu/sign/queryDailySginTasks'.format(host=host)
     res = session.post(url=url, headers=headers, data=json.dumps(params))
-    #log(res.json())
+    # log(res.json())
     unSignedTasks = res.json()['datas']['unSignedTasks']
     if len(unSignedTasks) < 1:
         log('当前没有未签到任务')
         exit(-1)
-    #若任务有两个以上
-    elif(len(unSignedTasks)>1):
+    # 若任务有两个以上
+    elif (len(unSignedTasks) > 1):
         for unSignedTask in unSignedTasks:
             taskName = unSignedTask['taskName']
-            if(taskName == "全校学生每日健康信息报送"):
+            if (taskName == "全校学生每日健康信息报送"):
                 latestTask = unSignedTask
-    else: #只有一个任务的情况
-        #傻狗学校有两个未签到任务，一个是每日的一个是两个月结算的。两个月结算的被顶到最上面了
-        #latestTask = unSignedTasks[0]
+    else:  # 只有一个任务的情况
+        # 傻狗学校有两个未签到任务，一个是每日的一个是两个月结算的。两个月结算的被顶到最上面了
+        # latestTask = unSignedTasks[0]
         taskName = unSignedTasks[0]['taskName']
         if (taskName != "全校学生每日健康信息报送"):
             print("签到任务已经完成")
@@ -99,7 +101,7 @@ def getDetailTask(params):
         'Content-Type': 'application/json;charset=UTF-8'
     }
     res = session.post(
-        url='https://{host}/wec-counselor-sign-apps/stu/sign/detailSignInstance'.format(host=host),
+        url='https://{host}/wec-counselor-sign-apps/stu/sign/detailSignTaskInst'.format(host=host),
         headers=headers, data=json.dumps(params))
     data = res.json()['datas']
     return data
@@ -139,7 +141,6 @@ def fillForm(task):
     return form
 
 
-
 # DES加密 (原来的方式加入header会提示今日校园版本太低)
 def DESEncrypt(s, key='ST83=@XV'):
     key = key
@@ -172,9 +173,9 @@ def submitForm(form):
         'Connection': 'Keep-Alive'
     }
 
+    res = session.post(url='https://{host}/wec-counselor-sign-apps/stu/sign/completeSignIn'.format(host=host),headers=headers, data=json.dumps(form))
+    #res = session.post(url='https://{host}/wec-counselor-sign-apps/stu/sign/completeSignIn'.format(host=apis['host']),
 
-    res = session.post(url='https://{host}/wec-counselor-sign-apps/stu/sign/submitSign'.format(host=host),
-                       headers=headers, data=json.dumps(form))
     message = res.json()['message']
     if message == 'SUCCESS':
         log('自动签到成功')
@@ -183,6 +184,7 @@ def submitForm(form):
         log('自动签到失败，原因是：' + message)
         exit(-1)
         # sendMessage('自动签到失败，原因是：' + message, user['email'])
+
 
 # 发送邮件通知
 def sendMessage(msg, email):
@@ -203,7 +205,7 @@ def main():
     data = {
         'sessionToken': sessionToken
     }
-    #不知道为何要去调用login的getModAuthCas方法，在登陆的时候已经调用过了。明天看看
+    # 不知道为何要去调用login的getModAuthCas方法，在登陆的时候已经调用过了。明天看看
     login.getModAuthCas(data)
     params = getUnSignedTasks()
     # log(params)
