@@ -17,7 +17,7 @@ if debug:
     requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
-# 读取yml配置
+# 读取yml配置。。。注意:linux定时任务下需要修改位置
 def getYmlConfig(yaml_file='config_users.yml'):
     file = open(yaml_file, 'r', encoding="utf-8")
     file_data = file.read()
@@ -293,15 +293,13 @@ def sendMessage(msg, email):
     send = email
     if send != '':
         log('正在发送邮件通知。。。')
-        res = requests.post(url='http://www.zimo.wiki:8080/mail-sender/sendMail',
-                            data={'title': '今日校园自动签到结果通知', 'content': msg, 'to': send}, verify=not debug)
-        code = res.json()['code']
-        if code == 0:
-            log('发送邮件通知成功。。。')
-        else:
-            log('发送邮件通知失败。。。')
-            log(res.json())
-
+        #data是放在请求头header里
+        #res = requests.post(url='http://47.100.46.229:8080/send/mail',data={'title': '今日校园自动签到结果通知', 'content': msg, 'to': send}, verify=not debug)
+        #json是放在请求体body里 对应java的@RequestBody
+        res = requests.post(url='http://47.100.46.229:8080/send/mail',
+                            json={'title': '今日校园自动签到结果通知', 'content': msg, 'to': send}, verify=not debug)
+        message = res.json()['message']
+        log(message)
 
 # 主函数
 def main():
