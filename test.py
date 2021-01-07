@@ -207,6 +207,7 @@ def fillForm(task, session, user, apis):
     form['isMalposition'] = task['isMalposition']
     form['abnormalReason'] = user['abnormalReason']
     form['position'] = user['address']
+    form['uaIsCpadaily'] = True
     return form
 
 
@@ -242,7 +243,7 @@ def getPictureUrl(session, fileName, apis):
 
 
 # DES加密
-def DESEncrypt(s, key='ST83=@XV'):
+def DESEncrypt(s, key='b3L26XNL'):
     key = key
     iv = b"\x01\x02\x03\x04\x05\x06\x07\x08"
     k = des(key, CBC, iv, pad=None, padmode=PAD_PKCS5)
